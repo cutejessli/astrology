@@ -280,7 +280,7 @@ function synthesizeIntegration(
   );
 
   sections.push(
-    `Your healing path integrates both energies: ${planetMeaning.healingPath.toLowerCase()} while honoring ${signMeaning.growthPath.toLowerCase()}.`
+    `Your healing path integrates both energies: ${planetMeaning.healingPath.toLowerCase()} while honoring ${signMeaning.healingPath.toLowerCase()}.`
   );
 
   return sections.join(" ");
