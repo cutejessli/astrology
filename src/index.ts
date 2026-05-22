@@ -3,6 +3,7 @@ export * from "./aspects";
 export * from "./chartBuilder";
 export * from "./ephemeris/types";
 export * from "./ephemeris/mockProvider";
+export * from "./ephemeris/jplHorizonsProvider";
 export * from "./interpretation/planets";
 export * from "./interpretation/signs";
 export * from "./interpretation/houses";
