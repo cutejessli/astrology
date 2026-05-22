@@ -29,6 +29,10 @@ import {
   interpretDispositors,
   DispositorInterpretationSection,
 } from "./dispositorSynthesis";
+import {
+  interpretChartDecans,
+  DecanInterpretationSection,
+} from "./decanSynthesis";
 
 export interface FullNatalReading {
   summary: string;
@@ -36,6 +40,7 @@ export interface FullNatalReading {
   aspectSections: AspectInterpretationSection[];
   dignitySections: DignityInterpretationSection[];
   houseRulerSections: HouseRulerInterpretationSection[];
+  decanSections: DecanInterpretationSection[];
   chartRulerSection?: ChartRulerInterpretationSection;
   dispositorSection?: DispositorInterpretationSection;
   allSections: Array<
@@ -45,12 +50,14 @@ export interface FullNatalReading {
     | ChartRulerInterpretationSection
     | HouseRulerInterpretationSection
     | DispositorInterpretationSection
+    | DecanInterpretationSection
   >;
   metadata: {
     planetSectionCount: number;
     aspectSectionCount: number;
     dignitySectionCount: number;
     houseRulerSectionCount: number;
+    decanSectionCount: number;
     hasChartRulerSection: boolean;
     hasDispositorSection: boolean;
     generatedBy: "astrology-interpretation-engine";
@@ -65,12 +72,14 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
   const chartRulerSection = interpretChartRuler(chart);
   const houseRulerSections = interpretHouseRulers(chart);
   const dispositorSection = interpretDispositors(chart);
+  const decanSections = interpretChartDecans(chart);
 
   const allSections = [
     ...natalInterpretation.sections,
     ...aspectSections,
     ...dignitySections,
     ...houseRulerSections,
+    ...decanSections,
     ...(chartRulerSection ? [chartRulerSection] : []),
     ...(dispositorSection ? [dispositorSection] : []),
   ].sort((a, b) => b.weight - a.weight);
@@ -81,6 +90,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       aspectSections,
       dignitySections,
       houseRulerSections,
+      decanSections,
       chartRulerSection,
       dispositorSection
     ),
@@ -88,6 +98,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
     aspectSections,
     dignitySections,
     houseRulerSections,
+    decanSections,
     chartRulerSection,
     dispositorSection,
     allSections,
@@ -96,6 +107,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       aspectSectionCount: aspectSections.length,
       dignitySectionCount: dignitySections.length,
       houseRulerSectionCount: houseRulerSections.length,
+      decanSectionCount: decanSections.length,
       hasChartRulerSection: Boolean(chartRulerSection),
       hasDispositorSection: Boolean(dispositorSection),
       generatedBy: "astrology-interpretation-engine",
@@ -108,6 +120,7 @@ function createFullSummary(
   aspectSections: AspectInterpretationSection[],
   dignitySections: DignityInterpretationSection[],
   houseRulerSections: HouseRulerInterpretationSection[],
+  decanSections: DecanInterpretationSection[],
   chartRulerSection?: ChartRulerInterpretationSection,
   dispositorSection?: DispositorInterpretationSection
 ): string {
@@ -138,5 +151,10 @@ function createFullSummary(
     ? ` The dispositor section traces the deeper rulership chain of the chart, showing which planetary intelligences receive, organize, or circulate the chart's energy.`
     : "";
 
-  return `${natalInterpretation.summary}${aspectSummary}${dignitySummary}${chartRulerSummary}${houseRulerSummary}${dispositorSummary} Together, these sections are not a fixed fate, but a symbolic mirror for self-understanding, healing, and conscious choice.`;
+  const decanSummary =
+    decanSections.length > 0
+      ? ` Decan sections add degree-level nuance, showing the more precise sub-tone beneath each personal planet's sign placement.`
+      : "";
+
+  return `${natalInterpretation.summary}${aspectSummary}${dignitySummary}${chartRulerSummary}${houseRulerSummary}${dispositorSummary}${decanSummary} Together, these sections are not a fixed fate, but a symbolic mirror for self-understanding, healing, and conscious choice.`;
 }
