@@ -72,6 +72,7 @@ export interface NatalChart {
   planets: Record<Planet, PlanetPosition>;
   nodes?: NodeAxis;
   chiron?: PlanetPosition;
+  lilith?: PlanetPosition;
   houses?: HouseCusp[];
   ascendant?: PlanetPosition;
   midheaven?: PlanetPosition;
@@ -155,6 +156,7 @@ export function createChart(
     midheaven?: number;
     northNode?: number;
     chiron?: number;
+    lilith?: number;
   }
 ): NatalChart {
   const houses =
@@ -201,6 +203,10 @@ export function createChart(
     chiron:
       typeof options?.chiron === "number"
         ? makeSpecialPosition(options.chiron)
+        : undefined,
+    lilith:
+      typeof options?.lilith === "number"
+        ? makeSpecialPosition(options.lilith)
         : undefined,
     houses,
     ascendant:
