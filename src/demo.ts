@@ -16,10 +16,11 @@ const demoChart = createChart(
     pluto: 246.6,
   },
   {
-    // Demo ascendant/midheaven values.
+    // Demo ascendant/midheaven/node values.
     // In production these will come from the astronomical calculation engine.
     ascendant: 14.2,
     midheaven: 284.6,
+    northNode: 193.5,
   }
 );
 
