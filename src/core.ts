@@ -44,6 +44,8 @@ export type Planet =
   | "neptune"
   | "pluto";
 
+export type LunarNode = "northNode" | "southNode";
+
 export type HouseNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
 export interface PlanetPosition {
@@ -52,6 +54,11 @@ export interface PlanetPosition {
   degree: number;
   house?: HouseNumber;
   retrograde?: boolean;
+}
+
+export interface NodeAxis {
+  northNode: PlanetPosition;
+  southNode: PlanetPosition;
 }
 
 export interface HouseCusp {
@@ -63,6 +70,7 @@ export interface HouseCusp {
 
 export interface NatalChart {
   planets: Record<Planet, PlanetPosition>;
+  nodes?: NodeAxis;
   houses?: HouseCusp[];
   ascendant?: PlanetPosition;
   midheaven?: PlanetPosition;
@@ -91,6 +99,26 @@ export function createPlanetPosition(
     degree: getDegree(longitude),
     house,
     retrograde,
+  };
+}
+
+export function createNodeAxis(
+  northNodeLongitude: number,
+  ascendantLongitude?: number
+): NodeAxis {
+  const northHouse =
+    typeof ascendantLongitude === "number"
+      ? getWholeSignHouse(northNodeLongitude, ascendantLongitude)
+      : undefined;
+  const southNodeLongitude = northNodeLongitude + 180;
+  const southHouse =
+    typeof ascendantLongitude === "number"
+      ? getWholeSignHouse(southNodeLongitude, ascendantLongitude)
+      : undefined;
+
+  return {
+    northNode: createPlanetPosition(northNodeLongitude, false, northHouse),
+    southNode: createPlanetPosition(southNodeLongitude, false, southHouse),
   };
 }
 
@@ -124,6 +152,7 @@ export function createChart(
   options?: {
     ascendant?: number;
     midheaven?: number;
+    northNode?: number;
   }
 ): NatalChart {
   const houses =
@@ -154,6 +183,10 @@ export function createChart(
       neptune: makePosition("neptune"),
       pluto: makePosition("pluto"),
     },
+    nodes:
+      typeof options?.northNode === "number"
+        ? createNodeAxis(options.northNode, options.ascendant)
+        : undefined,
     houses,
     ascendant:
       typeof options?.ascendant === "number"
