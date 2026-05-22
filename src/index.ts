@@ -17,4 +17,5 @@ export * from "./interpretation/aspectMeanings";
 export * from "./interpretation/aspectSynthesis";
 export * from "./interpretation/dignitySynthesis";
 export * from "./interpretation/chartRulerSynthesis";
+export * from "./interpretation/houseRulerSynthesis";
 export * from "./interpretation/fullNatalReading";
