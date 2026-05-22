@@ -6,6 +6,7 @@ export * from "./ephemeris/types";
 export * from "./ephemeris/backendContract";
 export * from "./ephemeris/mockProvider";
 export * from "./ephemeris/jplHorizonsProvider";
+export * from "./traditional/rulerships";
 export * from "./interpretation/planets";
 export * from "./interpretation/signs";
 export * from "./interpretation/houses";
