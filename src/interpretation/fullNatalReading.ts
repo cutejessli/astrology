@@ -21,23 +21,30 @@ import {
   interpretChartRuler,
   ChartRulerInterpretationSection,
 } from "./chartRulerSynthesis";
+import {
+  interpretHouseRulers,
+  HouseRulerInterpretationSection,
+} from "./houseRulerSynthesis";
 
 export interface FullNatalReading {
   summary: string;
   planetSections: InterpretationSection[];
   aspectSections: AspectInterpretationSection[];
   dignitySections: DignityInterpretationSection[];
+  houseRulerSections: HouseRulerInterpretationSection[];
   chartRulerSection?: ChartRulerInterpretationSection;
   allSections: Array<
     | InterpretationSection
     | AspectInterpretationSection
     | DignityInterpretationSection
     | ChartRulerInterpretationSection
+    | HouseRulerInterpretationSection
   >;
   metadata: {
     planetSectionCount: number;
     aspectSectionCount: number;
     dignitySectionCount: number;
+    houseRulerSectionCount: number;
     hasChartRulerSection: boolean;
     generatedBy: "astrology-interpretation-engine";
   };
@@ -49,11 +56,13 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
   const aspectSections = interpretAspects(aspects);
   const dignitySections = interpretChartDignities(chart);
   const chartRulerSection = interpretChartRuler(chart);
+  const houseRulerSections = interpretHouseRulers(chart);
 
   const allSections = [
     ...natalInterpretation.sections,
     ...aspectSections,
     ...dignitySections,
+    ...houseRulerSections,
     ...(chartRulerSection ? [chartRulerSection] : []),
   ].sort((a, b) => b.weight - a.weight);
 
@@ -62,17 +71,20 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       natalInterpretation,
       aspectSections,
       dignitySections,
+      houseRulerSections,
       chartRulerSection
     ),
     planetSections: natalInterpretation.sections,
     aspectSections,
     dignitySections,
+    houseRulerSections,
     chartRulerSection,
     allSections,
     metadata: {
       planetSectionCount: natalInterpretation.sections.length,
       aspectSectionCount: aspectSections.length,
       dignitySectionCount: dignitySections.length,
+      houseRulerSectionCount: houseRulerSections.length,
       hasChartRulerSection: Boolean(chartRulerSection),
       generatedBy: "astrology-interpretation-engine",
     },
@@ -83,6 +95,7 @@ function createFullSummary(
   natalInterpretation: NatalInterpretation,
   aspectSections: AspectInterpretationSection[],
   dignitySections: DignityInterpretationSection[],
+  houseRulerSections: HouseRulerInterpretationSection[],
   chartRulerSection?: ChartRulerInterpretationSection
 ): string {
   const aspectSummary =
@@ -103,5 +116,10 @@ function createFullSummary(
     ? ` The chart ruler section highlights the guiding planet of the chart, showing how the Ascendant's ruler shapes the way the whole pattern moves through life.`
     : "";
 
-  return `${natalInterpretation.summary}${aspectSummary}${dignitySummary}${chartRulerSummary} Together, these sections are not a fixed fate, but a symbolic mirror for self-understanding, healing, and conscious choice.`;
+  const houseRulerSummary =
+    houseRulerSections.length > 0
+      ? ` House ruler sections show how major life domains route into one another, revealing the chart as an interconnected symbolic network rather than separate parts.`
+      : "";
+
+  return `${natalInterpretation.summary}${aspectSummary}${dignitySummary}${chartRulerSummary}${houseRulerSummary} Together, these sections are not a fixed fate, but a symbolic mirror for self-understanding, healing, and conscious choice.`;
 }
