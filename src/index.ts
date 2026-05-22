@@ -8,6 +8,7 @@ export * from "./ephemeris/mockProvider";
 export * from "./ephemeris/jplHorizonsProvider";
 export * from "./traditional/rulerships";
 export * from "./traditional/chartRuler";
+export * from "./traditional/houseRulers";
 export * from "./interpretation/planets";
 export * from "./interpretation/signs";
 export * from "./interpretation/houses";
