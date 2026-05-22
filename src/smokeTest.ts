@@ -2,7 +2,7 @@ import { createChart } from "./core";
 import { detectAspects } from "./aspects";
 import { createFullNatalReading } from "./interpretation/fullNatalReading";
 
-function assert(condition: boolean, message: string): void {
+function assert(condition: boolean, message: string): asserts condition {
   if (!condition) {
     throw new Error(`Smoke test failed: ${message}`);
   }
