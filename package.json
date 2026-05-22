@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "demo": "tsx src/demo.ts",
+    "provider-demo": "tsx src/providerDemo.ts",
     "smoke": "tsx src/smokeTest.ts",
     "typecheck": "tsc --noEmit"
   },
