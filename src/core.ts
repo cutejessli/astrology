@@ -71,6 +71,7 @@ export interface HouseCusp {
 export interface NatalChart {
   planets: Record<Planet, PlanetPosition>;
   nodes?: NodeAxis;
+  chiron?: PlanetPosition;
   houses?: HouseCusp[];
   ascendant?: PlanetPosition;
   midheaven?: PlanetPosition;
@@ -153,6 +154,7 @@ export function createChart(
     ascendant?: number;
     midheaven?: number;
     northNode?: number;
+    chiron?: number;
   }
 ): NatalChart {
   const houses =
@@ -162,6 +164,15 @@ export function createChart(
 
   const makePosition = (planet: Planet): PlanetPosition => {
     const longitude = data[planet];
+    const house =
+      typeof options?.ascendant === "number"
+        ? getWholeSignHouse(longitude, options.ascendant)
+        : undefined;
+
+    return createPlanetPosition(longitude, false, house);
+  };
+
+  const makeSpecialPosition = (longitude: number): PlanetPosition => {
     const house =
       typeof options?.ascendant === "number"
         ? getWholeSignHouse(longitude, options.ascendant)
@@ -186,6 +197,10 @@ export function createChart(
     nodes:
       typeof options?.northNode === "number"
         ? createNodeAxis(options.northNode, options.ascendant)
+        : undefined,
+    chiron:
+      typeof options?.chiron === "number"
+        ? makeSpecialPosition(options.chiron)
         : undefined,
     houses,
     ascendant:
