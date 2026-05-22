@@ -9,6 +9,7 @@ import { interpretDispositors, DispositorInterpretationSection } from "./disposi
 import { interpretChartDecans, DecanInterpretationSection } from "./decanSynthesis";
 import { interpretChartBounds, BoundInterpretationSection } from "./boundSynthesis";
 import { interpretNodeAxis, NodeAxisInterpretationSection } from "./nodeSynthesis";
+import { interpretChiron, ChironInterpretationSection } from "./chironSynthesis";
 
 export interface FullNatalReading {
   summary: string;
@@ -19,6 +20,7 @@ export interface FullNatalReading {
   decanSections: DecanInterpretationSection[];
   boundSections: BoundInterpretationSection[];
   nodeAxisSection?: NodeAxisInterpretationSection;
+  chironSection?: ChironInterpretationSection;
   chartRulerSection?: ChartRulerInterpretationSection;
   dispositorSection?: DispositorInterpretationSection;
   allSections: Array<
@@ -29,6 +31,7 @@ export interface FullNatalReading {
     | DecanInterpretationSection
     | BoundInterpretationSection
     | NodeAxisInterpretationSection
+    | ChironInterpretationSection
     | ChartRulerInterpretationSection
     | DispositorInterpretationSection
   >;
@@ -40,6 +43,7 @@ export interface FullNatalReading {
     decanSectionCount: number;
     boundSectionCount: number;
     hasNodeAxisSection: boolean;
+    hasChironSection: boolean;
     hasChartRulerSection: boolean;
     hasDispositorSection: boolean;
     generatedBy: "astrology-interpretation-engine";
@@ -54,6 +58,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
   const decanSections = interpretChartDecans(chart);
   const boundSections = interpretChartBounds(chart);
   const nodeAxisSection = chart.nodes ? interpretNodeAxis(chart.nodes) : undefined;
+  const chironSection = chart.chiron ? interpretChiron(chart.chiron) : undefined;
   const chartRulerSection = interpretChartRuler(chart);
   const dispositorSection = interpretDispositors(chart);
 
@@ -65,6 +70,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
     ...decanSections,
     ...boundSections,
     ...(nodeAxisSection ? [nodeAxisSection] : []),
+    ...(chironSection ? [chironSection] : []),
     ...(chartRulerSection ? [chartRulerSection] : []),
     ...(dispositorSection ? [dispositorSection] : []),
   ].sort((a, b) => b.weight - a.weight);
@@ -78,6 +84,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       decanCount: decanSections.length,
       boundCount: boundSections.length,
       hasNodeAxis: Boolean(nodeAxisSection),
+      hasChiron: Boolean(chironSection),
       hasChartRuler: Boolean(chartRulerSection),
       hasDispositor: Boolean(dispositorSection),
     }),
@@ -88,6 +95,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
     decanSections,
     boundSections,
     nodeAxisSection,
+    chironSection,
     chartRulerSection,
     dispositorSection,
     allSections,
@@ -99,6 +107,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       decanSectionCount: decanSections.length,
       boundSectionCount: boundSections.length,
       hasNodeAxisSection: Boolean(nodeAxisSection),
+      hasChironSection: Boolean(chironSection),
       hasChartRulerSection: Boolean(chartRulerSection),
       hasDispositorSection: Boolean(dispositorSection),
       generatedBy: "astrology-interpretation-engine",
@@ -114,6 +123,7 @@ function createFullSummary(input: {
   decanCount: number;
   boundCount: number;
   hasNodeAxis: boolean;
+  hasChiron: boolean;
   hasChartRuler: boolean;
   hasDispositor: boolean;
 }): string {
@@ -122,6 +132,7 @@ function createFullSummary(input: {
   if (input.aspectCount > 0) parts.push(`This chart includes ${input.aspectCount} major aspect pattern${input.aspectCount === 1 ? "" : "s"}.`);
   if (input.dignityCount > 0) parts.push(`It includes ${input.dignityCount} planetary condition note${input.dignityCount === 1 ? "" : "s"}.`);
   if (input.hasNodeAxis) parts.push("The nodal axis section highlights the soul-growth direction and the familiar karmic pattern being integrated.");
+  if (input.hasChiron) parts.push("The Chiron section describes the sacred wound, healing path, and medicine carried by lived experience.");
   if (input.hasChartRuler) parts.push("The chart ruler section highlights the guiding planet of the chart.");
   if (input.houseRulerCount > 0) parts.push("House ruler sections show how major life domains route into one another.");
   if (input.hasDispositor) parts.push("The dispositor section traces the deeper rulership chain of the chart.");
