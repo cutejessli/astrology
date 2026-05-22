@@ -25,6 +25,10 @@ import {
   interpretHouseRulers,
   HouseRulerInterpretationSection,
 } from "./houseRulerSynthesis";
+import {
+  interpretDispositors,
+  DispositorInterpretationSection,
+} from "./dispositorSynthesis";
 
 export interface FullNatalReading {
   summary: string;
@@ -33,12 +37,14 @@ export interface FullNatalReading {
   dignitySections: DignityInterpretationSection[];
   houseRulerSections: HouseRulerInterpretationSection[];
   chartRulerSection?: ChartRulerInterpretationSection;
+  dispositorSection?: DispositorInterpretationSection;
   allSections: Array<
     | InterpretationSection
     | AspectInterpretationSection
     | DignityInterpretationSection
     | ChartRulerInterpretationSection
     | HouseRulerInterpretationSection
+    | DispositorInterpretationSection
   >;
   metadata: {
     planetSectionCount: number;
@@ -46,6 +52,7 @@ export interface FullNatalReading {
     dignitySectionCount: number;
     houseRulerSectionCount: number;
     hasChartRulerSection: boolean;
+    hasDispositorSection: boolean;
     generatedBy: "astrology-interpretation-engine";
   };
 }
@@ -57,6 +64,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
   const dignitySections = interpretChartDignities(chart);
   const chartRulerSection = interpretChartRuler(chart);
   const houseRulerSections = interpretHouseRulers(chart);
+  const dispositorSection = interpretDispositors(chart);
 
   const allSections = [
     ...natalInterpretation.sections,
@@ -64,6 +72,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
     ...dignitySections,
     ...houseRulerSections,
     ...(chartRulerSection ? [chartRulerSection] : []),
+    ...(dispositorSection ? [dispositorSection] : []),
   ].sort((a, b) => b.weight - a.weight);
 
   return {
@@ -72,13 +81,15 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       aspectSections,
       dignitySections,
       houseRulerSections,
-      chartRulerSection
+      chartRulerSection,
+      dispositorSection
     ),
     planetSections: natalInterpretation.sections,
     aspectSections,
     dignitySections,
     houseRulerSections,
     chartRulerSection,
+    dispositorSection,
     allSections,
     metadata: {
       planetSectionCount: natalInterpretation.sections.length,
@@ -86,6 +97,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       dignitySectionCount: dignitySections.length,
       houseRulerSectionCount: houseRulerSections.length,
       hasChartRulerSection: Boolean(chartRulerSection),
+      hasDispositorSection: Boolean(dispositorSection),
       generatedBy: "astrology-interpretation-engine",
     },
   };
@@ -96,7 +108,8 @@ function createFullSummary(
   aspectSections: AspectInterpretationSection[],
   dignitySections: DignityInterpretationSection[],
   houseRulerSections: HouseRulerInterpretationSection[],
-  chartRulerSection?: ChartRulerInterpretationSection
+  chartRulerSection?: ChartRulerInterpretationSection,
+  dispositorSection?: DispositorInterpretationSection
 ): string {
   const aspectSummary =
     aspectSections.length > 0
@@ -121,5 +134,9 @@ function createFullSummary(
       ? ` House ruler sections show how major life domains route into one another, revealing the chart as an interconnected symbolic network rather than separate parts.`
       : "";
 
-  return `${natalInterpretation.summary}${aspectSummary}${dignitySummary}${chartRulerSummary}${houseRulerSummary} Together, these sections are not a fixed fate, but a symbolic mirror for self-understanding, healing, and conscious choice.`;
+  const dispositorSummary = dispositorSection
+    ? ` The dispositor section traces the deeper rulership chain of the chart, showing which planetary intelligences receive, organize, or circulate the chart's energy.`
+    : "";
+
+  return `${natalInterpretation.summary}${aspectSummary}${dignitySummary}${chartRulerSummary}${houseRulerSummary}${dispositorSummary} Together, these sections are not a fixed fate, but a symbolic mirror for self-understanding, healing, and conscious choice.`;
 }
