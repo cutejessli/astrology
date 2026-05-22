@@ -2,6 +2,7 @@ export * from "./core";
 export * from "./aspects";
 export * from "./chartBuilder";
 export * from "./ephemeris/types";
+export * from "./ephemeris/backendContract";
 export * from "./ephemeris/mockProvider";
 export * from "./ephemeris/jplHorizonsProvider";
 export * from "./interpretation/planets";
