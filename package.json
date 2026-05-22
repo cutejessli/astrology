@@ -1,0 +1,27 @@
+{
+  "name": "astrology",
+  "version": "0.1.0",
+  "description": "A proprietary TypeScript astrology calculation and interpretation engine.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "demo": "tsx src/demo.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "astrology",
+    "typescript",
+    "interpretation",
+    "natal-chart"
+  ],
+  "author": "Jessica Potak",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
