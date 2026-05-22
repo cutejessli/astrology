@@ -13,4 +13,5 @@ export * from "./interpretation/houses";
 export * from "./interpretation/synthesis";
 export * from "./interpretation/aspectMeanings";
 export * from "./interpretation/aspectSynthesis";
+export * from "./interpretation/dignitySynthesis";
 export * from "./interpretation/fullNatalReading";
