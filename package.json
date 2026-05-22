@@ -9,6 +9,7 @@
     "build": "tsc",
     "demo": "tsx src/demo.ts",
     "provider-demo": "tsx src/providerDemo.ts",
+    "api-demo": "tsx src/apiDemo.ts",
     "smoke": "tsx src/smokeTest.ts",
     "typecheck": "tsc --noEmit"
   },
