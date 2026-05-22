@@ -1,4 +1,4 @@
-import { NatalChart } from "../core";
+import { HouseNumber, NatalChart } from "../core";
 import { assessChartRuler, ChartRulerAssessment } from "../traditional/chartRuler";
 import { planetMeanings } from "./planets";
 import { signMeanings } from "./signs";
@@ -21,7 +21,9 @@ export function interpretChartRuler(chart: NatalChart): ChartRulerInterpretation
 
   const planetMeaning = planetMeanings[assessment.chartRuler];
   const signMeaning = signMeanings[assessment.chartRulerSign];
-  const houseMeaning = assessment.chartRulerHouse ? houseMeanings[assessment.chartRulerHouse] : undefined;
+  const houseMeaning = assessment.chartRulerHouse
+    ? houseMeanings[assessment.chartRulerHouse as HouseNumber]
+    : undefined;
   const planetName = formatPlanet(assessment.chartRuler);
 
   const title = `Chart Ruler — ${planetName} in ${assessment.chartRulerSign}${
