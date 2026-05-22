@@ -8,6 +8,7 @@ import { interpretHouseRulers, HouseRulerInterpretationSection } from "./houseRu
 import { interpretDispositors, DispositorInterpretationSection } from "./dispositorSynthesis";
 import { interpretChartDecans, DecanInterpretationSection } from "./decanSynthesis";
 import { interpretChartBounds, BoundInterpretationSection } from "./boundSynthesis";
+import { interpretNodeAxis, NodeAxisInterpretationSection } from "./nodeSynthesis";
 
 export interface FullNatalReading {
   summary: string;
@@ -17,6 +18,7 @@ export interface FullNatalReading {
   houseRulerSections: HouseRulerInterpretationSection[];
   decanSections: DecanInterpretationSection[];
   boundSections: BoundInterpretationSection[];
+  nodeAxisSection?: NodeAxisInterpretationSection;
   chartRulerSection?: ChartRulerInterpretationSection;
   dispositorSection?: DispositorInterpretationSection;
   allSections: Array<
@@ -26,6 +28,7 @@ export interface FullNatalReading {
     | HouseRulerInterpretationSection
     | DecanInterpretationSection
     | BoundInterpretationSection
+    | NodeAxisInterpretationSection
     | ChartRulerInterpretationSection
     | DispositorInterpretationSection
   >;
@@ -36,6 +39,7 @@ export interface FullNatalReading {
     houseRulerSectionCount: number;
     decanSectionCount: number;
     boundSectionCount: number;
+    hasNodeAxisSection: boolean;
     hasChartRulerSection: boolean;
     hasDispositorSection: boolean;
     generatedBy: "astrology-interpretation-engine";
@@ -49,6 +53,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
   const houseRulerSections = interpretHouseRulers(chart);
   const decanSections = interpretChartDecans(chart);
   const boundSections = interpretChartBounds(chart);
+  const nodeAxisSection = chart.nodes ? interpretNodeAxis(chart.nodes) : undefined;
   const chartRulerSection = interpretChartRuler(chart);
   const dispositorSection = interpretDispositors(chart);
 
@@ -59,6 +64,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
     ...houseRulerSections,
     ...decanSections,
     ...boundSections,
+    ...(nodeAxisSection ? [nodeAxisSection] : []),
     ...(chartRulerSection ? [chartRulerSection] : []),
     ...(dispositorSection ? [dispositorSection] : []),
   ].sort((a, b) => b.weight - a.weight);
@@ -71,6 +77,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       houseRulerCount: houseRulerSections.length,
       decanCount: decanSections.length,
       boundCount: boundSections.length,
+      hasNodeAxis: Boolean(nodeAxisSection),
       hasChartRuler: Boolean(chartRulerSection),
       hasDispositor: Boolean(dispositorSection),
     }),
@@ -80,6 +87,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
     houseRulerSections,
     decanSections,
     boundSections,
+    nodeAxisSection,
     chartRulerSection,
     dispositorSection,
     allSections,
@@ -90,6 +98,7 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
       houseRulerSectionCount: houseRulerSections.length,
       decanSectionCount: decanSections.length,
       boundSectionCount: boundSections.length,
+      hasNodeAxisSection: Boolean(nodeAxisSection),
       hasChartRulerSection: Boolean(chartRulerSection),
       hasDispositorSection: Boolean(dispositorSection),
       generatedBy: "astrology-interpretation-engine",
@@ -104,6 +113,7 @@ function createFullSummary(input: {
   houseRulerCount: number;
   decanCount: number;
   boundCount: number;
+  hasNodeAxis: boolean;
   hasChartRuler: boolean;
   hasDispositor: boolean;
 }): string {
@@ -111,6 +121,7 @@ function createFullSummary(input: {
 
   if (input.aspectCount > 0) parts.push(`This chart includes ${input.aspectCount} major aspect pattern${input.aspectCount === 1 ? "" : "s"}.`);
   if (input.dignityCount > 0) parts.push(`It includes ${input.dignityCount} planetary condition note${input.dignityCount === 1 ? "" : "s"}.`);
+  if (input.hasNodeAxis) parts.push("The nodal axis section highlights the soul-growth direction and the familiar karmic pattern being integrated.");
   if (input.hasChartRuler) parts.push("The chart ruler section highlights the guiding planet of the chart.");
   if (input.houseRulerCount > 0) parts.push("House ruler sections show how major life domains route into one another.");
   if (input.hasDispositor) parts.push("The dispositor section traces the deeper rulership chain of the chart.");
