@@ -48,6 +48,14 @@ assert(reading.metadata.hasChartRulerSection === true, "Chart ruler metadata sho
 assert(chartRulerSection.title.includes("Mars in Leo"), "Aries rising should make Mars the chart ruler in this demo chart");
 assert(reading.houseRulerSections.length > 0, "Reading should include house ruler sections");
 assert(reading.metadata.houseRulerSectionCount === reading.houseRulerSections.length, "House ruler metadata count should match house ruler sections");
+assert(reading.decanSections.length > 0, "Reading should include decan sections");
+assert(reading.metadata.decanSectionCount === reading.decanSections.length, "Decan metadata count should match decan sections");
+assert(reading.boundSections.length > 0, "Reading should include bound sections");
+assert(reading.metadata.boundSectionCount === reading.boundSections.length, "Bound metadata count should match bound sections");
+assert(
+  reading.boundSections.some((section) => section.title.includes("Sun in Scorpio Bound")),
+  "Reading should include Sun bound section"
+);
 assert(dispositorSection !== undefined, "Reading should include a dispositor section");
 assert(reading.metadata.hasDispositorSection === true, "Dispositor metadata should be true");
 assert(dispositorSection.chains.length > 0, "Dispositor section should include chains");
@@ -69,5 +77,7 @@ console.log(`Detected ${aspects.length} aspects.`);
 console.log(`Generated ${reading.allSections.length} interpretation sections.`);
 console.log(`Generated ${reading.dignitySections.length} dignity sections.`);
 console.log(`Generated ${reading.houseRulerSections.length} house ruler sections.`);
+console.log(`Generated ${reading.decanSections.length} decan sections.`);
+console.log(`Generated ${reading.boundSections.length} bound sections.`);
 console.log(`Chart ruler: ${chartRulerSection.title}`);
 console.log(`Dispositor pattern: ${dispositorSection.title}`);
