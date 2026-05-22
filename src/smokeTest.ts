@@ -44,6 +44,12 @@ assert(reading.metadata.dignitySectionCount === reading.dignitySections.length, 
 assert(reading.chartRulerSection !== undefined, "Reading should include a chart ruler section");
 assert(reading.metadata.hasChartRulerSection === true, "Chart ruler metadata should be true");
 assert(reading.chartRulerSection?.title.includes("Mars in Leo"), "Aries rising should make Mars the chart ruler in this demo chart");
+assert(reading.houseRulerSections.length > 0, "Reading should include house ruler sections");
+assert(reading.metadata.houseRulerSectionCount === reading.houseRulerSections.length, "House ruler metadata count should match house ruler sections");
+assert(
+  reading.houseRulerSections.some((section) => section.title.includes("House 1 Ruler")),
+  "Reading should include 1st house ruler section"
+);
 assert(
   reading.planetSections.some((section) => section.title.includes("Transformation and Intimacy")),
   "Reading should include house-aware section titles"
@@ -57,4 +63,5 @@ console.log("Smoke test passed.");
 console.log(`Detected ${aspects.length} aspects.`);
 console.log(`Generated ${reading.allSections.length} interpretation sections.`);
 console.log(`Generated ${reading.dignitySections.length} dignity sections.`);
+console.log(`Generated ${reading.houseRulerSections.length} house ruler sections.`);
 console.log(`Chart ruler: ${reading.chartRulerSection?.title}`);
