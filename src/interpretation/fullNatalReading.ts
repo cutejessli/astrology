@@ -1,38 +1,13 @@
-// ============================================================
-// Full Natal Reading Generator
-// ============================================================
-
 import { NatalChart } from "../core";
 import { detectAspects } from "../aspects";
-import {
-  interpretNatalChart,
-  InterpretationSection,
-  NatalInterpretation,
-} from "./synthesis";
-import {
-  interpretAspects,
-  AspectInterpretationSection,
-} from "./aspectSynthesis";
-import {
-  interpretChartDignities,
-  DignityInterpretationSection,
-} from "./dignitySynthesis";
-import {
-  interpretChartRuler,
-  ChartRulerInterpretationSection,
-} from "./chartRulerSynthesis";
-import {
-  interpretHouseRulers,
-  HouseRulerInterpretationSection,
-} from "./houseRulerSynthesis";
-import {
-  interpretDispositors,
-  DispositorInterpretationSection,
-} from "./dispositorSynthesis";
-import {
-  interpretChartDecans,
-  DecanInterpretationSection,
-} from "./decanSynthesis";
+import { interpretNatalChart, InterpretationSection } from "./synthesis";
+import { interpretAspects, AspectInterpretationSection } from "./aspectSynthesis";
+import { interpretChartDignities, DignityInterpretationSection } from "./dignitySynthesis";
+import { interpretChartRuler, ChartRulerInterpretationSection } from "./chartRulerSynthesis";
+import { interpretHouseRulers, HouseRulerInterpretationSection } from "./houseRulerSynthesis";
+import { interpretDispositors, DispositorInterpretationSection } from "./dispositorSynthesis";
+import { interpretChartDecans, DecanInterpretationSection } from "./decanSynthesis";
+import { interpretChartBounds, BoundInterpretationSection } from "./boundSynthesis";
 
 export interface FullNatalReading {
   summary: string;
@@ -41,16 +16,18 @@ export interface FullNatalReading {
   dignitySections: DignityInterpretationSection[];
   houseRulerSections: HouseRulerInterpretationSection[];
   decanSections: DecanInterpretationSection[];
+  boundSections: BoundInterpretationSection[];
   chartRulerSection?: ChartRulerInterpretationSection;
   dispositorSection?: DispositorInterpretationSection;
   allSections: Array<
     | InterpretationSection
     | AspectInterpretationSection
     | DignityInterpretationSection
-    | ChartRulerInterpretationSection
     | HouseRulerInterpretationSection
-    | DispositorInterpretationSection
     | DecanInterpretationSection
+    | BoundInterpretationSection
+    | ChartRulerInterpretationSection
+    | DispositorInterpretationSection
   >;
   metadata: {
     planetSectionCount: number;
@@ -58,6 +35,7 @@ export interface FullNatalReading {
     dignitySectionCount: number;
     houseRulerSectionCount: number;
     decanSectionCount: number;
+    boundSectionCount: number;
     hasChartRulerSection: boolean;
     hasDispositorSection: boolean;
     generatedBy: "astrology-interpretation-engine";
@@ -65,49 +43,53 @@ export interface FullNatalReading {
 }
 
 export function createFullNatalReading(chart: NatalChart): FullNatalReading {
-  const natalInterpretation: NatalInterpretation = interpretNatalChart(chart);
-  const aspects = detectAspects(chart);
-  const aspectSections = interpretAspects(aspects);
+  const natal = interpretNatalChart(chart);
+  const aspectSections = interpretAspects(detectAspects(chart));
   const dignitySections = interpretChartDignities(chart);
-  const chartRulerSection = interpretChartRuler(chart);
   const houseRulerSections = interpretHouseRulers(chart);
-  const dispositorSection = interpretDispositors(chart);
   const decanSections = interpretChartDecans(chart);
+  const boundSections = interpretChartBounds(chart);
+  const chartRulerSection = interpretChartRuler(chart);
+  const dispositorSection = interpretDispositors(chart);
 
   const allSections = [
-    ...natalInterpretation.sections,
+    ...natal.sections,
     ...aspectSections,
     ...dignitySections,
     ...houseRulerSections,
     ...decanSections,
+    ...boundSections,
     ...(chartRulerSection ? [chartRulerSection] : []),
     ...(dispositorSection ? [dispositorSection] : []),
   ].sort((a, b) => b.weight - a.weight);
 
   return {
-    summary: createFullSummary(
-      natalInterpretation,
-      aspectSections,
-      dignitySections,
-      houseRulerSections,
-      decanSections,
-      chartRulerSection,
-      dispositorSection
-    ),
-    planetSections: natalInterpretation.sections,
+    summary: createFullSummary({
+      natalSummary: natal.summary,
+      aspectCount: aspectSections.length,
+      dignityCount: dignitySections.length,
+      houseRulerCount: houseRulerSections.length,
+      decanCount: decanSections.length,
+      boundCount: boundSections.length,
+      hasChartRuler: Boolean(chartRulerSection),
+      hasDispositor: Boolean(dispositorSection),
+    }),
+    planetSections: natal.sections,
     aspectSections,
     dignitySections,
     houseRulerSections,
     decanSections,
+    boundSections,
     chartRulerSection,
     dispositorSection,
     allSections,
     metadata: {
-      planetSectionCount: natalInterpretation.sections.length,
+      planetSectionCount: natal.sections.length,
       aspectSectionCount: aspectSections.length,
       dignitySectionCount: dignitySections.length,
       houseRulerSectionCount: houseRulerSections.length,
       decanSectionCount: decanSections.length,
+      boundSectionCount: boundSections.length,
       hasChartRulerSection: Boolean(chartRulerSection),
       hasDispositorSection: Boolean(dispositorSection),
       generatedBy: "astrology-interpretation-engine",
@@ -115,46 +97,27 @@ export function createFullNatalReading(chart: NatalChart): FullNatalReading {
   };
 }
 
-function createFullSummary(
-  natalInterpretation: NatalInterpretation,
-  aspectSections: AspectInterpretationSection[],
-  dignitySections: DignityInterpretationSection[],
-  houseRulerSections: HouseRulerInterpretationSection[],
-  decanSections: DecanInterpretationSection[],
-  chartRulerSection?: ChartRulerInterpretationSection,
-  dispositorSection?: DispositorInterpretationSection
-): string {
-  const aspectSummary =
-    aspectSections.length > 0
-      ? ` This chart also contains ${aspectSections.length} major aspect pattern${
-          aspectSections.length === 1 ? "" : "s"
-        }, showing how the different parts of the psyche interact, challenge, support, and refine one another.`
-      : " No major aspects are currently included in this reading, so the interpretation focuses on the personal planet placements.";
+function createFullSummary(input: {
+  natalSummary: string;
+  aspectCount: number;
+  dignityCount: number;
+  houseRulerCount: number;
+  decanCount: number;
+  boundCount: number;
+  hasChartRuler: boolean;
+  hasDispositor: boolean;
+}): string {
+  const parts = [input.natalSummary];
 
-  const dignitySummary =
-    dignitySections.length > 0
-      ? ` It also includes ${dignitySections.length} planetary condition note${
-          dignitySections.length === 1 ? "" : "s"
-        }, adding nuance around where a planet expresses with ease, tension, refinement, or deeper integration.`
-      : "";
+  if (input.aspectCount > 0) parts.push(`This chart includes ${input.aspectCount} major aspect pattern${input.aspectCount === 1 ? "" : "s"}.`);
+  if (input.dignityCount > 0) parts.push(`It includes ${input.dignityCount} planetary condition note${input.dignityCount === 1 ? "" : "s"}.`);
+  if (input.hasChartRuler) parts.push("The chart ruler section highlights the guiding planet of the chart.");
+  if (input.houseRulerCount > 0) parts.push("House ruler sections show how major life domains route into one another.");
+  if (input.hasDispositor) parts.push("The dispositor section traces the deeper rulership chain of the chart.");
+  if (input.decanCount > 0) parts.push("Decan sections add degree-level nuance beneath each personal planet's sign placement.");
+  if (input.boundCount > 0) parts.push("Bound sections add another degree-level stewardship layer for exact placements.");
 
-  const chartRulerSummary = chartRulerSection
-    ? ` The chart ruler section highlights the guiding planet of the chart, showing how the Ascendant's ruler shapes the way the whole pattern moves through life.`
-    : "";
+  parts.push("Together, these sections are a symbolic mirror for self-understanding, healing, and conscious choice.");
 
-  const houseRulerSummary =
-    houseRulerSections.length > 0
-      ? ` House ruler sections show how major life domains route into one another, revealing the chart as an interconnected symbolic network rather than separate parts.`
-      : "";
-
-  const dispositorSummary = dispositorSection
-    ? ` The dispositor section traces the deeper rulership chain of the chart, showing which planetary intelligences receive, organize, or circulate the chart's energy.`
-    : "";
-
-  const decanSummary =
-    decanSections.length > 0
-      ? ` Decan sections add degree-level nuance, showing the more precise sub-tone beneath each personal planet's sign placement.`
-      : "";
-
-  return `${natalInterpretation.summary}${aspectSummary}${dignitySummary}${chartRulerSummary}${houseRulerSummary}${dispositorSummary}${decanSummary} Together, these sections are not a fixed fate, but a symbolic mirror for self-understanding, healing, and conscious choice.`;
+  return parts.join(" ");
 }
