@@ -39,11 +39,18 @@ assert(Array.isArray(aspects), "Aspects should be an array");
 assert(typeof reading.summary === "string", "Reading summary should be a string");
 assert(reading.summary.length > 0, "Reading summary should not be empty");
 assert(reading.planetSections.length > 0, "Reading should include planet sections");
+assert(reading.dignitySections.length > 0, "Reading should include dignity sections");
+assert(reading.metadata.dignitySectionCount === reading.dignitySections.length, "Dignity metadata count should match dignity sections");
 assert(
   reading.planetSections.some((section) => section.title.includes("Transformation and Intimacy")),
   "Reading should include house-aware section titles"
+);
+assert(
+  reading.dignitySections.some((section) => section.title.includes("Venus in Pisces")),
+  "Reading should include Venus in Pisces dignity section"
 );
 
 console.log("Smoke test passed.");
 console.log(`Detected ${aspects.length} aspects.`);
 console.log(`Generated ${reading.allSections.length} interpretation sections.`);
+console.log(`Generated ${reading.dignitySections.length} dignity sections.`);
