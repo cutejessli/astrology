@@ -25,6 +25,7 @@ const chart = createChart(
     ascendant: 14.2,
     midheaven: 284.6,
     northNode: 193.5,
+    chiron: 105.2,
   }
 );
 
@@ -33,6 +34,7 @@ const reading = createFullNatalReading(chart);
 const chartRulerSection = reading.chartRulerSection;
 const dispositorSection = reading.dispositorSection;
 const nodeAxisSection = reading.nodeAxisSection;
+const chironSection = reading.chironSection;
 
 assert(chart.planets.sun.sign === "Scorpio", "Sun should resolve to Scorpio");
 assert(chart.planets.moon.sign === "Taurus", "Moon should resolve to Taurus");
@@ -41,6 +43,8 @@ assert(chart.ascendant?.sign === "Aries", "Ascendant should resolve to Aries");
 assert(chart.nodes !== undefined, "Chart should include lunar nodes");
 assert(chart.nodes.northNode.sign === "Libra", "North Node should resolve to Libra");
 assert(chart.nodes.southNode.sign === "Aries", "South Node should resolve to Aries");
+assert(chart.chiron !== undefined, "Chart should include Chiron");
+assert(chart.chiron.sign === "Cancer", "Chiron should resolve to Cancer");
 assert(chart.planets.sun.house === 8, "Sun should resolve to the 8th house with this demo ascendant");
 assert(Array.isArray(aspects), "Aspects should be an array");
 assert(typeof reading.summary === "string", "Reading summary should be a string");
@@ -51,6 +55,9 @@ assert(reading.metadata.dignitySectionCount === reading.dignitySections.length, 
 assert(nodeAxisSection !== undefined, "Reading should include a node axis section");
 assert(reading.metadata.hasNodeAxisSection === true, "Node axis metadata should be true");
 assert(nodeAxisSection.title.includes("North Node in Libra"), "Node section should include North Node in Libra");
+assert(chironSection !== undefined, "Reading should include a Chiron section");
+assert(reading.metadata.hasChironSection === true, "Chiron metadata should be true");
+assert(chironSection.title.includes("Chiron in Cancer"), "Chiron section should include Chiron in Cancer");
 assert(chartRulerSection !== undefined, "Reading should include a chart ruler section");
 assert(reading.metadata.hasChartRulerSection === true, "Chart ruler metadata should be true");
 assert(chartRulerSection.title.includes("Mars in Leo"), "Aries rising should make Mars the chart ruler in this demo chart");
@@ -88,5 +95,6 @@ console.log(`Generated ${reading.houseRulerSections.length} house ruler sections
 console.log(`Generated ${reading.decanSections.length} decan sections.`);
 console.log(`Generated ${reading.boundSections.length} bound sections.`);
 console.log(`Node axis: ${nodeAxisSection.title}`);
+console.log(`Chiron: ${chironSection.title}`);
 console.log(`Chart ruler: ${chartRulerSection.title}`);
 console.log(`Dispositor pattern: ${dispositorSection.title}`);
