@@ -46,6 +46,9 @@ assert(reading.metadata.hasChartRulerSection === true, "Chart ruler metadata sho
 assert(reading.chartRulerSection?.title.includes("Mars in Leo"), "Aries rising should make Mars the chart ruler in this demo chart");
 assert(reading.houseRulerSections.length > 0, "Reading should include house ruler sections");
 assert(reading.metadata.houseRulerSectionCount === reading.houseRulerSections.length, "House ruler metadata count should match house ruler sections");
+assert(reading.dispositorSection !== undefined, "Reading should include a dispositor section");
+assert(reading.metadata.hasDispositorSection === true, "Dispositor metadata should be true");
+assert(reading.dispositorSection?.chains.length > 0, "Dispositor section should include chains");
 assert(
   reading.houseRulerSections.some((section) => section.title.includes("House 1 Ruler")),
   "Reading should include 1st house ruler section"
@@ -65,3 +68,4 @@ console.log(`Generated ${reading.allSections.length} interpretation sections.`);
 console.log(`Generated ${reading.dignitySections.length} dignity sections.`);
 console.log(`Generated ${reading.houseRulerSections.length} house ruler sections.`);
 console.log(`Chart ruler: ${reading.chartRulerSection?.title}`);
+console.log(`Dispositor pattern: ${reading.dispositorSection?.title}`);
