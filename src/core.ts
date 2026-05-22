@@ -44,15 +44,28 @@ export type Planet =
   | "neptune"
   | "pluto";
 
+export type HouseNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+
 export interface PlanetPosition {
   longitude: number;
   sign: ZodiacSign;
   degree: number;
+  house?: HouseNumber;
   retrograde?: boolean;
+}
+
+export interface HouseCusp {
+  house: HouseNumber;
+  longitude: number;
+  sign: ZodiacSign;
+  degree: number;
 }
 
 export interface NatalChart {
   planets: Record<Planet, PlanetPosition>;
+  houses?: HouseCusp[];
+  ascendant?: PlanetPosition;
+  midheaven?: PlanetPosition;
 }
 
 export function normalize(deg: number): number {
@@ -69,31 +82,86 @@ export function getDegree(longitude: number): number {
 
 export function createPlanetPosition(
   longitude: number,
-  retrograde = false
+  retrograde = false,
+  house?: HouseNumber
 ): PlanetPosition {
   return {
-    longitude,
+    longitude: normalize(longitude),
     sign: getSign(longitude),
     degree: getDegree(longitude),
+    house,
     retrograde,
   };
 }
 
+export function createHouseCuspsFromAscendant(ascendantLongitude: number): HouseCusp[] {
+  const ascendantSignIndex = Math.floor(normalize(ascendantLongitude) / 30);
+
+  return Array.from({ length: 12 }, (_, index) => {
+    const signIndex = (ascendantSignIndex + index) % 12;
+    const longitude = signIndex * 30;
+
+    return {
+      house: (index + 1) as HouseNumber,
+      longitude,
+      sign: getSign(longitude),
+      degree: 0,
+    };
+  });
+}
+
+export function getWholeSignHouse(
+  planetLongitude: number,
+  ascendantLongitude: number
+): HouseNumber {
+  const planetSignIndex = Math.floor(normalize(planetLongitude) / 30);
+  const ascendantSignIndex = Math.floor(normalize(ascendantLongitude) / 30);
+  return (((planetSignIndex - ascendantSignIndex + 12) % 12) + 1) as HouseNumber;
+}
+
 export function createChart(
-  data: Record<Planet, number>
+  data: Record<Planet, number>,
+  options?: {
+    ascendant?: number;
+    midheaven?: number;
+  }
 ): NatalChart {
+  const houses =
+    typeof options?.ascendant === "number"
+      ? createHouseCuspsFromAscendant(options.ascendant)
+      : undefined;
+
+  const makePosition = (planet: Planet): PlanetPosition => {
+    const longitude = data[planet];
+    const house =
+      typeof options?.ascendant === "number"
+        ? getWholeSignHouse(longitude, options.ascendant)
+        : undefined;
+
+    return createPlanetPosition(longitude, false, house);
+  };
+
   return {
     planets: {
-      sun: createPlanetPosition(data.sun),
-      moon: createPlanetPosition(data.moon),
-      mercury: createPlanetPosition(data.mercury),
-      venus: createPlanetPosition(data.venus),
-      mars: createPlanetPosition(data.mars),
-      jupiter: createPlanetPosition(data.jupiter),
-      saturn: createPlanetPosition(data.saturn),
-      uranus: createPlanetPosition(data.uranus),
-      neptune: createPlanetPosition(data.neptune),
-      pluto: createPlanetPosition(data.pluto),
+      sun: makePosition("sun"),
+      moon: makePosition("moon"),
+      mercury: makePosition("mercury"),
+      venus: makePosition("venus"),
+      mars: makePosition("mars"),
+      jupiter: makePosition("jupiter"),
+      saturn: makePosition("saturn"),
+      uranus: makePosition("uranus"),
+      neptune: makePosition("neptune"),
+      pluto: makePosition("pluto"),
     },
+    houses,
+    ascendant:
+      typeof options?.ascendant === "number"
+        ? createPlanetPosition(options.ascendant)
+        : undefined,
+    midheaven:
+      typeof options?.midheaven === "number"
+        ? createPlanetPosition(options.midheaven)
+        : undefined,
   };
 }
