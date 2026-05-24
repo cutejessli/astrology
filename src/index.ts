@@ -20,6 +20,7 @@ export * from "./traditional/houseRulers";
 export * from "./traditional/dispositors";
 export * from "./traditional/decans";
 export * from "./traditional/bounds";
+export * from "./interpretation/voice";
 export * from "./interpretation/planets";
 export * from "./interpretation/signs";
 export * from "./interpretation/houses";
