@@ -1,6 +1,5 @@
 import {
   createChart,
-  createNodeAxis,
   createPlanetPosition,
   getDegree,
   getSign,
@@ -11,13 +10,13 @@ import {
 import type {
   HouseCusp,
   HouseNumber,
-  LunarNode,
   NatalChart,
-  NodeAxis,
   Planet,
   PlanetPosition,
   ZodiacSign,
 } from "./core";
+import { createNodeAxis } from "./nodeAxis";
+import type { LunarNode, NodeAxis } from "./nodeAxis";
 import { detectAspects } from "./aspects";
 import { buildNatalChart } from "./chartBuilder";
 import { createNatalChartReading } from "./astrologyApi";
