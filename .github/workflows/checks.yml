@@ -30,6 +30,10 @@ jobs:
           sed -n '1,60p' src/index.ts
           echo "--- src/core.ts ---"
           sed -n '1,90p' src/core.ts
+          echo "--- src/specialPoints/nodes.ts ---"
+          sed -n '1,5p' src/specialPoints/nodes.ts
+          echo "--- src/interpretation/nodeSynthesis.ts ---"
+          sed -n '1,8p' src/interpretation/nodeSynthesis.ts
           echo "--- package.json scripts ---"
           cat package.json
 
