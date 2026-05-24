@@ -5,6 +5,7 @@
 
 import { createNodeAxis } from "./nodeAxis";
 import type { NodeAxis } from "./nodeAxis";
+export type { LunarNode, NodeAxis } from "./nodeAxis";
 
 export type ZodiacSign =
   | "Aries"
