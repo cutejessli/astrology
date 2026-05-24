@@ -6,6 +6,7 @@ import { NatalChart, Planet, PlanetPosition, ZodiacSign } from "../core";
 import { planetMeanings, PlanetMeaning } from "./planets";
 import { signMeanings, SignMeaning } from "./signs";
 import { houseMeanings, HouseMeaning } from "./houses";
+import { joinSentences, lowerFirst, reduceReportLanguage } from "./voice";
 
 export interface InterpretationSection {
   title: string;
@@ -123,15 +124,15 @@ function synthesizeBody(
   signMeaning: SignMeaning,
   houseMeaning?: HouseMeaning
 ): string {
-  const sections: string[] = [];
+  const sections = [
+    synthesizeOpening(planet, sign, planetMeaning, signMeaning, houseMeaning),
+    synthesizeCoreExpression(planet, sign, planetMeaning, signMeaning, houseMeaning),
+    synthesizePsychological(planet, sign, signMeaning, houseMeaning),
+    synthesizeSpiritual(planetMeaning, signMeaning, houseMeaning),
+    synthesizeIntegration(planetMeaning, signMeaning, houseMeaning),
+  ];
 
-  sections.push(synthesizeOpening(planet, sign, planetMeaning, signMeaning, houseMeaning));
-  sections.push(synthesizeCoreExpression(planet, sign, planetMeaning, signMeaning, houseMeaning));
-  sections.push(synthesizePsychological(planet, sign, signMeaning, houseMeaning));
-  sections.push(synthesizeSpiritual(planetMeaning, signMeaning, houseMeaning));
-  sections.push(synthesizeIntegration(planetMeaning, signMeaning, houseMeaning));
-
-  return sections.join(" ");
+  return reduceReportLanguage(joinSentences(sections));
 }
 
 function synthesizeOpening(
@@ -143,24 +144,12 @@ function synthesizeOpening(
 ): string {
   const planetName = capitalizeFirst(planet);
   const archetype = extractArchetypeName(signMeaning.coreArchetype).toLowerCase();
+  const coreNoun = extractCoreNoun(planetMeaning.coreMeaning);
   const housePhrase = houseMeaning
-    ? ` through the life arena of ${houseMeaning.lifeArea.toLowerCase()}`
+    ? `, especially through ${houseMeaning.lifeArea.toLowerCase()}`
     : "";
 
-  const openings = [
-    `Your ${planetName} in ${sign} expresses ${extractCoreNoun(
-      planetMeaning.coreMeaning
-    )} as ${archetype}${housePhrase}.`,
-    `In ${sign}, your ${planetName} becomes ${archetype}, channeling the energy of ${extractCoreNoun(
-      planetMeaning.coreMeaning
-    )}${housePhrase}.`,
-    `The ${archetype} archetype infuses your ${planetName}, creating an expression of ${extractCoreNoun(
-      planetMeaning.coreMeaning
-    )} that is distinctly ${sign.toLowerCase()}${housePhrase}.`,
-  ];
-
-  const index = (planet.charCodeAt(0) + sign.charCodeAt(0)) % openings.length;
-  return openings[index];
+  return `Your ${planetName} in ${sign} carries the ${archetype} current, giving your ${coreNoun} a distinctly ${sign.toLowerCase()} rhythm${housePhrase}.`;
 }
 
 function synthesizeCoreExpression(
@@ -170,15 +159,12 @@ function synthesizeCoreExpression(
   signMeaning: SignMeaning,
   houseMeaning?: HouseMeaning
 ): string {
-  const placementContext = houseMeaning
-    ? ` In the house of ${houseMeaning.title.toLowerCase()}, this energy concentrates around ${houseMeaning.coreTheme.toLowerCase()}`
+  const planetName = capitalizeFirst(planet);
+  const houseLayer = houseMeaning
+    ? ` In everyday life, this tends to show up around ${houseMeaning.coreTheme.toLowerCase()}.`
     : "";
 
-  return `The ${sign} influence shapes how your ${capitalizeFirst(
-    planet
-  )} operates: ${signMeaning.psychologicalExpression.toLowerCase()} becomes the vehicle through which ${extractCoreNoun(
-    planetMeaning.psychologicalFunction
-  )} expresses itself.${placementContext}`;
+  return `${planetName} wants to express ${lowerFirst(extractCoreNoun(planetMeaning.psychologicalFunction))}; ${sign} gives that expression the texture of ${lowerFirst(signMeaning.psychologicalExpression)}.${houseLayer}`;
 }
 
 function synthesizePsychological(
@@ -189,10 +175,10 @@ function synthesizePsychological(
 ): string {
   const planetName = capitalizeFirst(planet);
   const houseLayer = houseMeaning
-    ? ` Psychologically, the ${houseMeaning.title.toLowerCase()} house adds this focus: ${houseMeaning.psychologicalExpression.toLowerCase()}`
+    ? ` The ${houseMeaning.title.toLowerCase()} adds another layer: ${lowerFirst(houseMeaning.psychologicalExpression)}.`
     : "";
 
-  return `Psychologically, this placement invites you to develop your ${planetName} through ${sign}'s particular lens: ${signMeaning.psychologicalExpression.toLowerCase()}.${houseLayer}`;
+  return `Psychologically, this part of you learns by letting ${planetName} move through ${sign}'s lens of ${lowerFirst(signMeaning.psychologicalExpression)}.${houseLayer}`;
 }
 
 function synthesizeSpiritual(
@@ -201,12 +187,10 @@ function synthesizeSpiritual(
   houseMeaning?: HouseMeaning
 ): string {
   const houseLayer = houseMeaning
-    ? ` The house layer adds: ${houseMeaning.spiritualExpression.toLowerCase()}`
+    ? ` The house brings the lesson into ${lowerFirst(houseMeaning.spiritualExpression)}.`
     : "";
 
-  return `Spiritually, this is an invitation to understand ${signMeaning.spiritualExpression.toLowerCase()} as inseparable from ${extractCoreNoun(
-    planetMeaning.spiritualFunction
-  )}.${houseLayer}`;
+  return `Spiritually, the invitation is to let ${lowerFirst(signMeaning.spiritualExpression)} become part of how you embody ${extractCoreNoun(planetMeaning.spiritualFunction)}.${houseLayer}`;
 }
 
 function synthesizeIntegration(
@@ -215,13 +199,13 @@ function synthesizeIntegration(
   houseMeaning?: HouseMeaning
 ): string {
   const houseShadow = houseMeaning
-    ? ` In this life area, the shadow may also appear as ${houseMeaning.shadowExpression.toLowerCase()}`
+    ? ` In this area of life, the shadow can also show up as ${lowerFirst(houseMeaning.shadowExpression)}.`
     : "";
   const houseHealing = houseMeaning
-    ? ` The practical integration is to ${houseMeaning.healingPath.toLowerCase()}`
+    ? ` A practical doorway is to ${lowerFirst(houseMeaning.healingPath)}.`
     : "";
 
-  return `The shadow appears when ${planetMeaning.shadowExpression.toLowerCase()} combines with ${signMeaning.shadowExpression.toLowerCase()}.${houseShadow} Your healing path integrates both energies: ${planetMeaning.healingPath.toLowerCase()} while honoring ${signMeaning.healingPath.toLowerCase()}.${houseHealing}`;
+  return `The shadow appears when ${lowerFirst(planetMeaning.shadowExpression)} gets tangled with ${lowerFirst(signMeaning.shadowExpression)}.${houseShadow} The medicine is to ${lowerFirst(planetMeaning.healingPath)} while also ${lowerFirst(signMeaning.healingPath)}.${houseHealing}`;
 }
 
 function createChartSummary(chart: NatalChart): string {
@@ -238,30 +222,16 @@ function createChartSummary(chart: NatalChart): string {
   const marsArchetype = extractArchetypeName(signMeanings[marsSign].coreArchetype);
 
   const houseSummary = chart.houses
-    ? ` Because house placements are included, this reading also describes where these archetypal energies tend to express themselves in lived experience.`
+    ? ` Because house placements are included, the reading also shows where these energies tend to become visible in real life.`
     : "";
 
-  const sections: string[] = [];
-
-  sections.push(
-    `Your natal chart is a symbolic map of your consciousness—not a fixed destiny, but a dynamic field of potential.`
-  );
-
-  sections.push(
-    `At your core (Sun in ${sunSign}), you are the ${sunArchetype.toLowerCase()}, bringing your essential self into being. Your inner world (Moon in ${moonSign}) responds through the lens of the ${moonArchetype.toLowerCase()}, seeking ${extractCoreNounFromArchetype(
-      moonArchetype
-    ).toLowerCase()}.`
-  );
-
-  sections.push(
-    `How you think and connect is shaped by the ${mercuryArchetype.toLowerCase()} (Mercury in ${mercurySign}). How you love is expressed through the ${venusArchetype.toLowerCase()} (Venus in ${venusSign}). How you act is channeled through the ${marsArchetype.toLowerCase()} (Mars in ${marsSign}).${houseSummary}`
-  );
-
-  sections.push(
-    `These aren't constraints but invitations—potentials waiting for your conscious engagement. Your growth lies in understanding these energies and learning to express them with intention and wisdom.`
-  );
-
-  return sections.join(" ");
+  return joinSentences([
+    `Your natal chart is a symbolic map of consciousness, not a fixed sentence or a locked fate`,
+    `At the center, your Sun in ${sunSign} carries the ${sunArchetype.toLowerCase()} current, while your Moon in ${moonSign} shows an inner world shaped by the ${moonArchetype.toLowerCase()}`,
+    `Mercury in ${mercurySign} describes the way your mind connects and translates experience; Venus in ${venusSign} shows how love, beauty, and receptivity move through you; Mars in ${marsSign} shows how desire, courage, and action gather momentum`,
+    houseSummary,
+    `Together, these placements are invitations: living patterns you can notice, refine, and embody with more clarity over time`,
+  ]);
 }
 
 function extractArchetypeName(archetype: string): string {
@@ -297,25 +267,6 @@ function extractCoreNoun(text: string): string {
   if (text.includes("action")) return "purposeful action";
 
   return text.split(/[,.]/)[0].trim().toLowerCase();
-}
-
-function extractCoreNounFromArchetype(archetype: string): string {
-  const mappings: Record<string, string> = {
-    Initiator: "initiation",
-    Consolidator: "stability",
-    Translator: "connection",
-    Nurturer: "belonging",
-    Creator: "expression",
-    Analyst: "understanding",
-    Arbiter: "balance",
-    Alchemist: "transformation",
-    Seeker: "meaning",
-    Builder: "structure",
-    Revolutionary: "evolution",
-    Mystic: "unity",
-  };
-
-  return mappings[archetype] || "expression";
 }
 
 function capitalizeFirst(str: string): string {
