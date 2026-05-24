@@ -5,6 +5,7 @@
 import { Aspect, AspectType } from "../aspects";
 import { planetMeanings } from "./planets";
 import { aspectMeanings } from "./aspectMeanings";
+import { joinSentences, lowerFirst } from "./voice";
 
 export interface AspectInterpretationSection {
   title: string;
@@ -29,17 +30,15 @@ export function interpretAspect(aspect: Aspect): AspectInterpretationSection {
     planetB.keywords[0]
   )}`;
 
-  const body = [
-    `${planetAName} represents ${lowerFirst(planetA.coreMeaning)}`,
-    `${planetBName} represents ${lowerFirst(planetB.coreMeaning)}`,
+  const body = joinSentences([
+    `${planetAName} speaks to ${lowerFirst(planetA.coreMeaning)}`,
+    `${planetBName} speaks to ${lowerFirst(planetB.coreMeaning)}`,
     `Together, this ${aspect.type} creates ${lowerFirst(aspectMeaning.dynamic)}`,
-    `The gift of this aspect is ${lowerFirst(aspectMeaning.gift)}`,
-    `The challenge is ${lowerFirst(aspectMeaning.challenge)}`,
-    `The integration path is to ${lowerFirst(aspectMeaning.integrationPath)}`,
-    `With an orb of ${aspect.orb.toFixed(2)}°, this aspect carries ${describeOrbStrength(
-      aspect.orb
-    )} emphasis in the chart.`,
-  ].join(" ");
+    `The gift here is ${lowerFirst(aspectMeaning.gift)}`,
+    `The growth edge is ${lowerFirst(aspectMeaning.challenge)}`,
+    `Integration comes through learning to ${lowerFirst(aspectMeaning.integrationPath)}`,
+    `With an orb of ${aspect.orb.toFixed(2)} degrees, this pattern feels ${describeOrbStrength(aspect.orb)} in the chart`,
+  ]);
 
   const keywords = unique([
     ...planetA.keywords.slice(0, 3),
@@ -84,8 +83,8 @@ function createAspectTitlePhrase(
   const b = capitalize(planetBKeyword);
 
   const phrases: Record<AspectType, string> = {
-    conjunction: `${a} and ${b} Fused`,
-    opposition: `${a} and ${b} in Sacred Polarity`,
+    conjunction: `${a} and ${b} Working Together`,
+    opposition: `${a} and ${b} in Polarity`,
     trine: `${a}, ${b}, and Natural Flow`,
     square: `${a}, ${b}, and Growth Pressure`,
     sextile: `${a} Supporting ${b}`,
@@ -113,10 +112,6 @@ function formatAspectName(aspect: AspectType): string {
 
 function capitalize(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function lowerFirst(value: string): string {
-  return value.charAt(0).toLowerCase() + value.slice(1);
 }
 
 function unique(values: string[]): string[] {
