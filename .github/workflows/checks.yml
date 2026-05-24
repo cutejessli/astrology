@@ -33,8 +33,8 @@ jobs:
       - name: Smoke test
         run: npm run smoke
 
-      - name: API demo
-        run: npm run api-demo
+      - name: Demo
+        run: npm run demo
 
       - name: Build
         run: npm run build
