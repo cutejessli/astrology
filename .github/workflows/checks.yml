@@ -19,6 +19,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug checkout
+        run: |
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "GITHUB_REF=$GITHUB_REF"
+          git status
+          git rev-parse HEAD
+          git branch --show-current
+          echo "--- src/index.ts ---"
+          sed -n '1,60p' src/index.ts
+          echo "--- src/core.ts ---"
+          sed -n '1,90p' src/core.ts
+          echo "--- package.json scripts ---"
+          cat package.json
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
