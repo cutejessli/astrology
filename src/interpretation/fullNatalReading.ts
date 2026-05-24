@@ -11,6 +11,7 @@ import { interpretChartBounds, BoundInterpretationSection } from "./boundSynthes
 import { interpretNodeAxis, NodeAxisInterpretationSection } from "./nodeSynthesis";
 import { interpretChiron, ChironInterpretationSection } from "./chironSynthesis";
 import { interpretLilith, LilithInterpretationSection } from "./lilithSynthesis";
+import { joinSentences } from "./voice";
 
 export interface FullNatalReading {
   summary: string;
@@ -137,20 +138,38 @@ function createFullSummary(input: {
   hasChartRuler: boolean;
   hasDispositor: boolean;
 }): string {
-  const parts = [input.natalSummary];
-
-  if (input.aspectCount > 0) parts.push(`This chart includes ${input.aspectCount} major aspect pattern${input.aspectCount === 1 ? "" : "s"}.`);
-  if (input.dignityCount > 0) parts.push(`It includes ${input.dignityCount} planetary condition note${input.dignityCount === 1 ? "" : "s"}.`);
-  if (input.hasNodeAxis) parts.push("The nodal axis section highlights the soul-growth direction and the familiar karmic pattern being integrated.");
-  if (input.hasChiron) parts.push("The Chiron section describes the sacred wound, healing path, and medicine carried by lived experience.");
-  if (input.hasLilith) parts.push("The Black Moon Lilith section describes exiled instinct, sovereignty, taboo truth, and reclamation.");
-  if (input.hasChartRuler) parts.push("The chart ruler section highlights the guiding planet of the chart.");
-  if (input.houseRulerCount > 0) parts.push("House ruler sections show how major life domains route into one another.");
-  if (input.hasDispositor) parts.push("The dispositor section traces the deeper rulership chain of the chart.");
-  if (input.decanCount > 0) parts.push("Decan sections add degree-level nuance beneath each personal planet's sign placement.");
-  if (input.boundCount > 0) parts.push("Bound sections add another degree-level stewardship layer for exact placements.");
-
-  parts.push("Together, these sections are a symbolic mirror for self-understanding, healing, and conscious choice.");
-
-  return parts.join(" ");
+  return joinSentences([
+    input.natalSummary,
+    input.aspectCount > 0
+      ? `The aspect patterns show how different parts of the chart speak to one another, creating both support and growth pressure`
+      : undefined,
+    input.dignityCount > 0
+      ? `The planetary condition notes add nuance around where each planet feels especially supported, challenged, or intensified`
+      : undefined,
+    input.hasNodeAxis
+      ? `The nodal axis adds the long arc of growth: familiar patterns, new practice, and the direction that wants more embodiment`
+      : undefined,
+    input.hasChiron
+      ? `Chiron brings in the healing thread, showing where tenderness can become wisdom over time`
+      : undefined,
+    input.hasLilith
+      ? `Black Moon Lilith brings in the reclamation thread: instinct, sovereignty, and the places where truth wants to return to the body`
+      : undefined,
+    input.hasChartRuler
+      ? `The chart ruler acts like a guiding planet, coloring the way the whole chart organizes itself`
+      : undefined,
+    input.houseRulerCount > 0
+      ? `The house ruler sections show how life areas feed into one another, turning the chart into a living system instead of isolated placements`
+      : undefined,
+    input.hasDispositor
+      ? `The dispositor section follows the deeper chain of influence underneath the placements`
+      : undefined,
+    input.decanCount > 0
+      ? `The decans add a finer degree-level texture to the personal planets`
+      : undefined,
+    input.boundCount > 0
+      ? `The bounds add another subtle layer of stewardship around exact degrees`
+      : undefined,
+    `Taken together, this reading is meant to be a mirror for self-understanding, healing, and conscious choice`,
+  ]);
 }
