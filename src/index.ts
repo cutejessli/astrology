@@ -1,5 +1,6 @@
 export {
   createChart,
+  createNodeAxis,
   createPlanetPosition,
   getDegree,
   getSign,
@@ -10,7 +11,9 @@ export {
 export type {
   HouseCusp,
   HouseNumber,
+  LunarNode,
   NatalChart,
+  NodeAxis,
   Planet,
   PlanetPosition,
   ZodiacSign,
