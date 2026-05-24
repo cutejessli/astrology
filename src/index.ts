@@ -1,4 +1,24 @@
-export * from "./core";
+export {
+  SIGNS,
+  normalize,
+  getSign,
+  getDegree,
+  createPlanetPosition,
+  createNodeAxis,
+  createHouseCuspsFromAscendant,
+  getWholeSignHouse,
+  createChart,
+} from "./core";
+export type {
+  ZodiacSign,
+  Planet,
+  LunarNode,
+  HouseNumber,
+  PlanetPosition,
+  NodeAxis,
+  HouseCusp,
+  NatalChart,
+} from "./core";
 export * from "./aspects";
 export * from "./chartBuilder";
 export * from "./astrologyApi";
