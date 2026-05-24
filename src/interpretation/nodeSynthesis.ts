@@ -6,6 +6,7 @@ import {
 } from "../specialPoints/nodes";
 import { signMeanings } from "./signs";
 import { houseMeanings } from "./houses";
+import { joinSentences, lowerFirst } from "./voice";
 
 export interface NodeAxisInterpretationSection {
   title: string;
@@ -27,19 +28,17 @@ export function interpretNodeAxis(axis: NodeAxis): NodeAxisInterpretationSection
 
   const title = `Nodal Axis — North Node in ${north.sign}, South Node in ${south.sign}`;
 
-  const houseText = northHouse && southHouse
-    ? ` The house axis adds lived context: the North Node develops through ${northHouse.lifeArea.toLowerCase()}, while the South Node releases over-identification with ${southHouse.lifeArea.toLowerCase()}.`
-    : "";
-
-  const body = [
-    `The lunar nodes describe an evolutionary axis rather than a personality trait.`,
-    `The South Node in ${south.sign} shows familiar gifts and inherited patterns connected to ${lowerFirst(southMeaning.coreMeaning)}`,
-    `The North Node in ${north.sign} points toward ${lowerFirst(northMeaning.coreMeaning)}`,
-    `This axis moves ${getNodeAxisTheme(north.sign)}.`,
-    `The ${south.sign} side carries the archetype of ${lowerFirst(southSign.coreArchetype)}, while the ${north.sign} side asks the soul to grow through ${lowerFirst(northSign.coreArchetype)}.`,
-    houseText,
-    `The healing path is not to reject the South Node, but to use its gifts consciously while letting the North Node become the new horizon of embodiment.`,
-  ].filter(Boolean).join(" ");
+  const body = joinSentences([
+    `The lunar nodes describe a growth current: familiar patterns behind you, and a new direction asking for practice`,
+    `The South Node in ${south.sign} shows old gifts, reflexes, and comfort zones connected to ${lowerFirst(southMeaning.coreMeaning)}`,
+    `The North Node in ${north.sign} points toward ${lowerFirst(northMeaning.coreMeaning)}, even when that direction feels unfamiliar at first`,
+    `This axis moves ${getNodeAxisTheme(north.sign)}`,
+    `The ${south.sign} side carries the imprint of ${lowerFirst(southSign.coreArchetype)}, while the ${north.sign} side asks you to practice ${lowerFirst(northSign.coreArchetype)} with more trust`,
+    northHouse && southHouse
+      ? `In daily life, the North Node develops through ${lowerFirst(northHouse.lifeArea)}, while the South Node asks you to loosen over-identification with ${lowerFirst(southHouse.lifeArea)}`
+      : undefined,
+    `The medicine is not to reject the South Node, but to stop living there on autopilot; its gifts can support the North Node path`,
+  ]);
 
   return {
     title,
@@ -58,10 +57,6 @@ export function interpretNodeAxis(axis: NodeAxis): NodeAxisInterpretationSection
     weight: 5.0,
     axis,
   };
-}
-
-function lowerFirst(value: string): string {
-  return value.charAt(0).toLowerCase() + value.slice(1);
 }
 
 function unique(values: string[]): string[] {
