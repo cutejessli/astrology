@@ -1,4 +1,5 @@
-import { ZodiacSign, LunarNode } from "../core";
+import { ZodiacSign } from "../core";
+import type { LunarNode } from "../nodeAxis";
 
 export interface NodeMeaning {
   coreMeaning: string;
