@@ -1,11 +1,7 @@
-import { PlanetPosition, ZodiacSign, createPlanetPosition } from "../core";
+import { ZodiacSign, NodeAxis, LunarNode, createNodeAxis } from "../core";
 
-export type LunarNode = "northNode" | "southNode";
-
-export interface NodeAxis {
-  northNode: PlanetPosition;
-  southNode: PlanetPosition;
-}
+export { createNodeAxis };
+export type { NodeAxis, LunarNode };
 
 export interface NodeMeaning {
   coreMeaning: string;
@@ -49,15 +45,6 @@ export const nodeAxisThemes: Record<ZodiacSign, string> = {
   Aquarius: "from personal drama or excessive self-focus toward collective vision, friendship, innovation, and shared future",
   Pisces: "from control, perfectionism, or over-analysis toward surrender, compassion, imagination, and spiritual trust",
 };
-
-export function createNodeAxis(northNodeLongitude: number): NodeAxis {
-  const southNodeLongitude = northNodeLongitude + 180;
-
-  return {
-    northNode: createPlanetPosition(northNodeLongitude),
-    southNode: createPlanetPosition(southNodeLongitude),
-  };
-}
 
 export function getNodeAxisTheme(northNodeSign: ZodiacSign): string {
   return nodeAxisThemes[northNodeSign];
