@@ -2,6 +2,7 @@ import { HouseNumber, PlanetPosition } from "../core";
 import { chironMeaning } from "../specialPoints/chiron";
 import { signMeanings } from "./signs";
 import { houseMeanings } from "./houses";
+import { joinSentences, lowerFirst } from "./voice";
 
 export interface ChironInterpretationSection {
   title: string;
@@ -17,17 +18,18 @@ export function interpretChiron(position: PlanetPosition): ChironInterpretationS
 
   const title = `Chiron in ${position.sign}${houseMeaning ? ` in ${houseMeaning.title}` : ""}`;
 
-  const houseText = houseMeaning
-    ? ` In ${houseMeaning.title.toLowerCase()}, this healing path expresses through ${houseMeaning.lifeArea.toLowerCase()}.`
-    : "";
-
-  const body = [
-    `Chiron describes the sacred wound and the medicine that can emerge from it.`,
-    `In ${position.sign}, the wound-and-gift pattern is filtered through ${lowerFirst(signMeaning.coreArchetype)}.`,
-    `This may involve healing themes around ${lowerFirst(signMeaning.psychologicalExpression)}.`,
-    houseText,
-    `The deeper medicine is this: ${chironMeaning.healingPath}`,
-  ].filter(Boolean).join(" ");
+  const body = joinSentences([
+    `Chiron speaks to the tender place where a wound can slowly become medicine`,
+    `In ${position.sign}, that healing story moves through ${lowerFirst(signMeaning.coreArchetype)}`,
+    `You may notice old sensitivity around ${lowerFirst(signMeaning.psychologicalExpression)}, but this is also where wisdom begins to ripen through lived experience`,
+    houseMeaning
+      ? `Because this falls in ${houseMeaning.title.toLowerCase()}, the healing path tends to unfold through ${lowerFirst(houseMeaning.lifeArea)}`
+      : undefined,
+    `The deeper medicine is to ${lowerFirst(chironMeaning.healingPath)}`,
+    houseMeaning
+      ? `A grounded way to work with it is to ${lowerFirst(houseMeaning.healingPath)}`
+      : undefined,
+  ]);
 
   return {
     title,
@@ -41,10 +43,6 @@ export function interpretChiron(position: PlanetPosition): ChironInterpretationS
     weight: 4.6,
     position,
   };
-}
-
-function lowerFirst(value: string): string {
-  return value.charAt(0).toLowerCase() + value.slice(1);
 }
 
 function unique(values: string[]): string[] {
