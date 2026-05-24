@@ -1,4 +1,5 @@
-import { HouseNumber, NodeAxis } from "../core";
+import { HouseNumber } from "../core";
+import type { NodeAxis } from "../nodeAxis";
 import { getNodeAxisTheme, nodeMeanings } from "../specialPoints/nodes";
 import { signMeanings } from "./signs";
 import { houseMeanings } from "./houses";
