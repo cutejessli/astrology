@@ -10,6 +10,7 @@ export * from "./ephemeris/jplHorizonsProvider";
 export * from "./backend/apiTypes";
 export * from "./backend/createNatalReadingHandler";
 export * from "./backend/health";
+export * from "./backend/vercelAdapter";
 export * from "./specialPoints/nodes";
 export * from "./specialPoints/chiron";
 export * from "./specialPoints/lilith";
