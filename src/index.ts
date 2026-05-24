@@ -1,4 +1,4 @@
-export {
+import {
   createChart,
   createNodeAxis,
   createPlanetPosition,
@@ -8,7 +8,7 @@ export {
   normalize,
   SIGNS,
 } from "./core";
-export type {
+import type {
   HouseCusp,
   HouseNumber,
   LunarNode,
@@ -18,10 +18,40 @@ export type {
   PlanetPosition,
   ZodiacSign,
 } from "./core";
-export { detectAspects } from "./aspects";
-export { buildNatalChart } from "./chartBuilder";
-export { createNatalChartReading } from "./astrologyApi";
-export { createFullNatalReading } from "./interpretation/fullNatalReading";
-export { handleCreateNatalReading } from "./backend/createNatalReadingHandler";
-export { handleHealthCheck } from "./backend/health";
-export { healthVercelHandler, natalReadingVercelHandler } from "./backend/vercelAdapter";
+import { detectAspects } from "./aspects";
+import { buildNatalChart } from "./chartBuilder";
+import { createNatalChartReading } from "./astrologyApi";
+import { createFullNatalReading } from "./interpretation/fullNatalReading";
+import { handleCreateNatalReading } from "./backend/createNatalReadingHandler";
+import { handleHealthCheck } from "./backend/health";
+import { healthVercelHandler, natalReadingVercelHandler } from "./backend/vercelAdapter";
+
+export {
+  SIGNS,
+  buildNatalChart,
+  createChart,
+  createFullNatalReading,
+  createNatalChartReading,
+  createNodeAxis,
+  createPlanetPosition,
+  detectAspects,
+  getDegree,
+  getSign,
+  getWholeSignHouse,
+  handleCreateNatalReading,
+  handleHealthCheck,
+  healthVercelHandler,
+  natalReadingVercelHandler,
+  normalize,
+};
+
+export type {
+  HouseCusp,
+  HouseNumber,
+  LunarNode,
+  NatalChart,
+  NodeAxis,
+  Planet,
+  PlanetPosition,
+  ZodiacSign,
+};
