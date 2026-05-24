@@ -1,9 +1,5 @@
-import { HouseNumber } from "../core";
-import {
-  NodeAxis,
-  getNodeAxisTheme,
-  nodeMeanings,
-} from "../specialPoints/nodes";
+import { HouseNumber, NodeAxis } from "../core";
+import { getNodeAxisTheme, nodeMeanings } from "../specialPoints/nodes";
 import { signMeanings } from "./signs";
 import { houseMeanings } from "./houses";
 import { joinSentences, lowerFirst } from "./voice";
