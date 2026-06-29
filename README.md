@@ -13,7 +13,8 @@ This repo currently includes:
 - Planet/sign synthesis
 - Aspect synthesis
 - Full natal reading generation
-- Demo runner
+- Sun-sign retrograde interpretation engine
+- Demo and smoke-test runners
 
 ## Install
 
@@ -39,6 +40,29 @@ npm run typecheck
 npm run build
 ```
 
+## Retrograde readings
+
+The initial retrograde MVP uses a solar-house model. The engine combines the user's Sun sign with the sign of the retrograde event, selects one of twelve house interpretations, and returns a structured page-ready result.
+
+```ts
+import { resolveRetrogradeReading } from "astrology";
+
+const reading = resolveRetrogradeReading(
+  "mercury-retrograde-2026-cancer",
+  "Virgo"
+);
+```
+
+For a Virgo Sun, Cancer resolves to the eleventh solar house, so the result focuses on friendships, community, audiences, technology, and future plans.
+
+When the Sun sign is missing or invalid, the resolver returns the collective overview and a prompt to add the user's birth date. It never guesses a sign.
+
+Run the retrograde smoke test with:
+
+```bash
+npm run retrograde-smoke
+```
+
 ## Current architecture
 
 ```txt
@@ -55,6 +79,13 @@ src/
     aspectMeanings.ts
     aspectSynthesis.ts
     fullNatalReading.ts
+  retrogrades/
+    types.ts
+    solarHouse.ts
+    retrogradeCatalog.ts
+    mercuryHouseReadings.ts
+    resolveRetrogradeReading.ts
+    retrogradeSmokeTest.ts
 ```
 
 ## Important IP note
@@ -63,9 +94,8 @@ This project should not copy copyrighted astrology books or proprietary astrolog
 
 ## Next roadmap
 
-1. Add tests.
-2. Add house-aware chart model.
-3. Add Ascendant and Midheaven support.
-4. Add NASA/JPL ephemeris adapter interface.
-5. Add transit chart support.
-6. Add API wrapper for use in the mobile app.
+1. Connect the retrograde resolver to the Ascension Oneness retrograde detail page.
+2. Add future Mercury retrograde events to the catalog.
+3. Add interpretation libraries for other retrograde planets.
+4. Add full natal-chart transit aspects and timing.
+5. Add an optional AI deep-reading layer after deterministic calculations are complete.
