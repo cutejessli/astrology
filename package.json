@@ -11,6 +11,7 @@
     "provider-demo": "tsx src/providerDemo.ts",
     "api-demo": "tsx src/apiDemo.ts",
     "smoke": "tsx src/smokeTest.ts",
+    "retrograde-smoke": "tsx src/retrogrades/retrogradeSmokeTest.ts",
     "pretypecheck": "node scripts/print-build-context.mjs",
     "typecheck": "tsc --noEmit"
   },
