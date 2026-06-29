@@ -26,8 +26,8 @@ export interface RetrogradeSunSignReading {
   solarHouse: HouseNumber;
   areaName: string;
   headline: string;
-  paragraphs: string[];
-  focusAreas: [string, string, string];
+  paragraphs: readonly string[];
+  focusAreas: readonly [string, string, string];
   practicalAction: string;
   reflectionPrompt: string;
 }
