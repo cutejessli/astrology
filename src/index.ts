@@ -54,3 +54,23 @@ export type {
   PlanetPosition,
   ZodiacSign,
 };
+
+export {
+  MERCURY_RETROGRADE_HOUSE_READINGS,
+  getMercuryRetrogradeHouseReading,
+} from "./retrogrades/mercuryHouseReadings";
+export {
+  RETROGRADE_CATALOG,
+  getRetrogradeEvent,
+} from "./retrogrades/retrogradeCatalog";
+export type { RetrogradeEventId } from "./retrogrades/retrogradeCatalog";
+export { resolveRetrogradeReading } from "./retrogrades/resolveRetrogradeReading";
+export { getSolarHouse, isZodiacSign } from "./retrogrades/solarHouse";
+export type {
+  CollectiveRetrogradeReading,
+  PersonalizedRetrogradeReading,
+  ResolvedRetrogradeReading,
+  RetrogradeEvent,
+  RetrogradePlanet,
+  RetrogradeSunSignReading,
+} from "./retrogrades/types";
